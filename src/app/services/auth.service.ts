@@ -40,6 +40,8 @@ export class AuthService {
                 return 'Email not found';
             case 'INVALID_PASSWORD':
                 return 'Invalid password';
+            case 'INVALID_LOGIN_CREDENTIALS':
+                return 'Invalid login credentials'
             default:
                 return 'Unknown error occured.Please try again.'
         }

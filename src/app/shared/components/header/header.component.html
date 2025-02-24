@@ -17,10 +17,14 @@
                     <a class="nav-link" href="#" [routerLink]="['/posts']">Posts</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" [routerLink]="['/auth']">Login</a>
+                    <a class="nav-link" href="#" [routerLink]="['/auth']" *ngIf="!(isAuthenticated | async)">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" [routerLink]="['/auth/signup']">SignUp</a>
+                    <a class="nav-link" href="#" [routerLink]="['/auth/signup']"
+                        *ngIf="!(isAuthenticated | async)">SignUp</a>
+                </li>
+                <li class="nav-item" *ngIf="isAuthenticated | async">
+                    <a class="nav-link" href="#">Logout</a>
                 </li>
             </ul>
         </div>
