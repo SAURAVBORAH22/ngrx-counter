@@ -28,6 +28,22 @@ export class AuthService {
         );
     }
 
+    signUp(email: string, password: string): Observable<AuthResponseData> {
+        return from(this.afAuth.createUserWithEmailAndPassword(email, password)).pipe(
+            map((userCredential: any) => {
+                const user = userCredential.user;
+                return {
+                    idToken: userCredential.idToken || '',
+                    email: user?.email || '',
+                    refreshToken: userCredential.refreshToken || '',
+                    expiresIn: userCredential.expirationDate || '3600',
+                    localId: user?.uid || '',
+                    registered: userCredential.additionalUserInfo?.isNewUser || false,
+                };
+            })
+        );
+    }
+
     formatUser(data: AuthResponseData) {
         const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000)
         const user = new User(data.email, data.idToken, data.localId, expirationDate);

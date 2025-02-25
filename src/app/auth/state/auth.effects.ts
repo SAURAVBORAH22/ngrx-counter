@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { loginStart, loginSuccess } from "./auth.actions";
+import { loginStart, loginSuccess, signUpStart, signUpSuccess } from "./auth.actions";
 import { catchError, exhaustMap, map } from 'rxjs/operators';
 import { AuthService } from "src/app/services/auth.service";
 import { Store } from "@ngrx/store";
@@ -42,10 +42,31 @@ export class AuthEffects {
 
     loginRedirect$ = createEffect(() => {
         return this.actions$.pipe(
-            ofType(loginSuccess),
+            ofType(...[loginSuccess, signUpSuccess]),
             map((action) => {
+                this.store.dispatch(setErrorMessage({ message: '' }));
                 this.router.navigate(['/'])
             })
         );
     }, { dispatch: false })
+
+    signUp$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(signUpStart),
+            exhaustMap((action) => {
+                return this.authService.signUp(action.email, action.password).pipe(
+                    map((data) => {
+                        this.store.dispatch(setLoadingSpinner({ status: false }));
+                        this.store.dispatch(setErrorMessage({ message: '' }));
+                        const user = this.authService.formatUser(data);
+                        return signUpSuccess({ user });
+                    }),
+                    catchError((errResp) => {
+                        this.store.dispatch(setLoadingSpinner({ status: false }));
+                        return of(setErrorMessage({ message: errResp.message }));
+                    })
+                );
+            })
+        );
+    })
 }
