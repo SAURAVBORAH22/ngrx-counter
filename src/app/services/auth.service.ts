@@ -10,6 +10,7 @@ import { User } from "../models/userModel";
     providedIn: 'root'
 })
 export class AuthService {
+    timeoutInterval: any;
     constructor(private http: HttpClient, private afAuth: AngularFireAuth) { }
 
     login(email: string, password: string): Observable<AuthResponseData> {
@@ -17,9 +18,9 @@ export class AuthService {
             map((userCredential: any) => {
                 const user = userCredential.user;
                 return {
-                    idToken: userCredential.idToken || '',
+                    idToken: user?.idToken || '',
                     email: user?.email || '',
-                    refreshToken: userCredential.refreshToken || '',
+                    refreshToken: user?.refreshToken,
                     expiresIn: userCredential.expirationDate || '3600',
                     localId: user?.uid || '',
                     registered: userCredential.additionalUserInfo?.isNewUser || false,
@@ -33,9 +34,9 @@ export class AuthService {
             map((userCredential: any) => {
                 const user = userCredential.user;
                 return {
-                    idToken: userCredential.idToken || '',
+                    idToken: user?.idToken || '',
                     email: user?.email || '',
-                    refreshToken: userCredential.refreshToken || '',
+                    refreshToken: user?.refreshToken,
                     expiresIn: userCredential.expirationDate || '3600',
                     localId: user?.uid || '',
                     registered: userCredential.additionalUserInfo?.isNewUser || false,
@@ -46,7 +47,7 @@ export class AuthService {
 
     formatUser(data: AuthResponseData) {
         const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000)
-        const user = new User(data.email, data.idToken, data.localId, expirationDate);
+        const user = new User(data.email, data.refreshToken, data.localId, expirationDate);
         return user;
     }
 
@@ -61,6 +62,32 @@ export class AuthService {
             default:
                 return 'Unknown error occured.Please try again.'
         }
+    }
+
+    runTimeoutInterval(user: User) {
+        const todaysDate = new Date().getTime();
+        const expirationDate = user.expireDate.getTime();
+        const timeInterval = expirationDate - todaysDate;
+        this.timeoutInterval = setTimeout(() => {
+
+        }, timeInterval)
+    }
+
+    setUserInLocalStorage(user: User) {
+        localStorage.setItem('userData', JSON.stringify(user));
+        this.runTimeoutInterval(user);
+    }
+
+    getUserFromLocalStore() {
+        const userDataString = localStorage.getItem('userData');
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            const expirationDate = new Date(userData.expirationDate);
+            const user = new User(userData.email, userData.refreshToken, userData.localId, expirationDate);
+            this.runTimeoutInterval(user);
+            return user;
+        }
+        return null;
     }
 
 

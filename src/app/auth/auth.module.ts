@@ -27,7 +27,7 @@ const routes: Routes = [
 @NgModule({
     imports: [CommonModule,
         ReactiveFormsModule,
-        EffectsModule.forFeature([AuthEffects]),
+        EffectsModule.forFeature(),
         RouterModule.forChild(routes)
     ],
     declarations: [LoginComponent, SignupComponent]

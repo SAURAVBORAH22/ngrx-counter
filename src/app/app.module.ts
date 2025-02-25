@@ -15,6 +15,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { appReducer } from './store/app.state';
+import { AuthEffects } from './auth/state/auth.effects';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { appReducer } from './store/app.state';
     HttpClientModule,
     ReactiveFormsModule,
     StoreModule.forRoot(appReducer),
-    EffectsModule.forRoot([]),
+    EffectsModule.forRoot([AuthEffects]),
     StoreDevtoolsModule.instrument({
       logOnly: environment.production //restricts extension to log-only mode
     }),
