@@ -5,13 +5,19 @@ import { from, Observable } from "rxjs";
 import { AuthResponseData } from "../models/AuthResponseData.model";
 import { map } from "rxjs/operators";
 import { User } from "../models/userModel";
+import { AppState } from "../store/app.state";
+import { Store } from "@ngrx/store";
+import { autoLogout } from "../auth/state/auth.actions";
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
     timeoutInterval: any;
-    constructor(private http: HttpClient, private afAuth: AngularFireAuth) { }
+    constructor(
+        private afAuth: AngularFireAuth,
+        private store: Store<AppState>
+    ) { }
 
     login(email: string, password: string): Observable<AuthResponseData> {
         return from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(
@@ -69,7 +75,7 @@ export class AuthService {
         const expirationDate = user.expireDate.getTime();
         const timeInterval = expirationDate - todaysDate;
         this.timeoutInterval = setTimeout(() => {
-
+            this.store.dispatch(autoLogout())
         }, timeInterval)
     }
 
@@ -87,7 +93,15 @@ export class AuthService {
             this.runTimeoutInterval(user);
             return user;
         }
-        return null;
+        return null
+    }
+
+    logout() {
+        localStorage.removeItem('userData');
+        if (this.timeoutInterval) {
+            clearTimeout(this.timeoutInterval);
+            this.timeoutInterval = null;
+        }
     }
 
 
