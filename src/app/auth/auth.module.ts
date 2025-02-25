@@ -5,6 +5,7 @@ import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { EffectsModule } from "@ngrx/effects";
 import { AuthEffects } from "./state/auth.effects";
+import { SignupComponent } from './signup/signup.component';
 
 const routes: Routes = [
     {
@@ -15,6 +16,9 @@ const routes: Routes = [
             },
             {
                 path: 'login', component: LoginComponent
+            },
+            {
+                path: 'signup', component: SignupComponent
             }
         ]
     }
@@ -26,7 +30,7 @@ const routes: Routes = [
         EffectsModule.forFeature([AuthEffects]),
         RouterModule.forChild(routes)
     ],
-    declarations: [LoginComponent]
+    declarations: [LoginComponent, SignupComponent]
 })
 export class AuthModule {
 
