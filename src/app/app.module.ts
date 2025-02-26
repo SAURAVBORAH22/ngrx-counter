@@ -16,6 +16,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { appReducer } from './store/app.state';
 import { AuthEffects } from './auth/state/auth.effects';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { AuthEffects } from './auth/state/auth.effects';
     }),
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize Firebase with the config
     AngularFireAuthModule, // If you're using Firebase Authentication
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
