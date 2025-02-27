@@ -20,7 +20,7 @@ export class EditPostComponent implements OnInit, OnDestroy {
   };
   postForm: FormGroup = new FormGroup({});
   postSubscription: Subscription = new Subscription;
-  constructor(private route: ActivatedRoute,
+  constructor(
     private store: Store<AppState>,
     private router: Router
   ) { }
