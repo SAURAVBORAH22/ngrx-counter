@@ -10,13 +10,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { EffectsModule } from '@ngrx/effects';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { appReducer } from './store/app.state';
 import { AuthEffects } from './auth/state/auth.effects';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AuthTokenInterceptor } from './services/AuthToken.interceptor';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AngularFireAuthModule, // If you're using Firebase Authentication
     AngularFirestoreModule
   ],
-  providers: [],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
