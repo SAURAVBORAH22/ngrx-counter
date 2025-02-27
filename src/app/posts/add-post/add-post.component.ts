@@ -4,6 +4,8 @@ import { Store } from '@ngrx/store';
 import { Post } from 'src/app/models/posts.model';
 import { AppState } from 'src/app/store/app.state';
 import { addPost } from '../state/posts.actions';
+import { getPosts } from '../state/posts.selector';
+import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-add-post',
   templateUrl: './add-post.component.html',
@@ -37,11 +39,14 @@ export class AddPostComponent implements OnInit {
     if (!this.postForm.valid) {
       return;
     }
-    const post: Post = {
-      title: this.postForm.value.title,
-      description: this.postForm.value.description
-    }
-    this.store.dispatch(addPost({ post }));
+    this.store.select(getPosts).pipe(take(1)).subscribe(posts => {
+      const post: Post = {
+        id: (posts.length + 1).toString(),
+        title: this.postForm.value.title,
+        description: this.postForm.value.description
+      };
+      this.store.dispatch(addPost({ post }));
+    });
   }
 
 }
