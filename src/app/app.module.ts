@@ -18,6 +18,7 @@ import { appReducer } from './store/app.state';
 import { AuthEffects } from './auth/state/auth.effects';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AuthTokenInterceptor } from './services/AuthToken.interceptor';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { AuthTokenInterceptor } from './services/AuthToken.interceptor';
     }),
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize Firebase with the config
     AngularFireAuthModule, // If you're using Firebase Authentication
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    StoreRouterConnectingModule.forRoot()
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
