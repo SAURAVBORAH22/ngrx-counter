@@ -1,0 +1,9 @@
+<h1>Post Details</h1>
+<div *ngIf="post">
+    <h3>Id: {{post.id}}</h3>
+    <h3>Title: {{post.title}}</h3>
+    <h3>Description: {{post.description}}</h3>
+</div>
+<div>
+    <a href="" [routerLink]="['/posts']">Back to posts</a>
+</div>

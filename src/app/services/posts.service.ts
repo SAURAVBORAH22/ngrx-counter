@@ -57,4 +57,16 @@ export class PostsService {
                 })
             );
     }
+
+    getPostById(id: string): Observable<Post> {
+        return this.firestore.collection('Posts').doc(id).get().pipe(
+            map(doc => {
+                if (doc.exists) {
+                    return doc.data() as Post;
+                } else {
+                    throw new Error('Post not found');
+                }
+            })
+        )
+    }
 }
