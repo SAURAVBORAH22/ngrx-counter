@@ -26,13 +26,16 @@ export class EditPostComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
-      const id = params.get('id');
-      this.postSubscription = this.store.select(getPostById, { id }).subscribe((data) => {
-        this.post = data;
-        this.createForm()
-      })
-    })
+    this.createForm();
+    this.store.select(getPostById).subscribe((post) => {
+      if (post) {
+        this.post = post;
+        this.postForm.patchValue({
+          title: post?.title,
+          description: post?.description
+        })
+      }
+    });
   }
 
   createForm() {
