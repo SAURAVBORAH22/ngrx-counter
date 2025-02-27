@@ -5,11 +5,13 @@ import { AuthGuard } from "./services/auth.guard";
 
 const routes: Routes = [
     {
-        path: '', component: HomeComponent
+        path: '', component: HomeComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'counter',
-        loadChildren: () => import('./counter/counter.module').then((m) => m.CounterModule)
+        loadChildren: () => import('./counter/counter.module').then((m) => m.CounterModule),
+        canActivate: [AuthGuard]
     },
     {
         path: 'posts',
