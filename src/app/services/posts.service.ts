@@ -12,14 +12,18 @@ export class PostsService {
     constructor(private http: HttpClient, private firestore: AngularFirestore) { }
 
     getPosts(): Observable<Post[]> {
-        return this.firestore.collection('Posts').valueChanges()
+        return this.firestore.collection('Posts').snapshotChanges()
             .pipe(
-                map((data: any[]) => {
-                    return data.map(item => ({
-                        id: item.id,
-                        title: item.title,
-                        description: item.description
-                    })) as Post[];
+                map((actions: any[]) => {
+                    return actions.map(action => {
+                        const data = action.payload.doc.data();
+                        const id = action.payload.doc.id;
+                        return {
+                            id,
+                            title: data.title,
+                            description: data.description,
+                        } as Post;
+                    });
                 })
             );
     }
@@ -28,5 +32,29 @@ export class PostsService {
         return from(this.firestore.collection('Posts').add(post)).pipe(
             switchMap(() => this.getPosts())
         );
+    }
+
+    updatePosts(post: Post): Observable<Post[]> {
+        return this.firestore.collection('Posts', ref => ref.where('id', '==', post.id))
+            .get()
+            .pipe(
+                switchMap(snapshot => {
+                    return from(this.firestore.collection('Posts').doc(post.id).update(post)).pipe(
+                        switchMap(() => this.getPosts())
+                    );
+                })
+            );
+    }
+
+    deletePost(id: string): Observable<Post[]> {
+        return this.firestore.collection('Posts', ref => ref.where('id', '==', id))
+            .get()
+            .pipe(
+                switchMap(snapshot => {
+                    return from(this.firestore.collection('Posts').doc(id).delete()).pipe(
+                        switchMap(() => this.getPosts())
+                    );
+                })
+            );
     }
 }
