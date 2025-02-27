@@ -19,6 +19,7 @@ import { AuthEffects } from './auth/state/auth.effects';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AuthTokenInterceptor } from './services/AuthToken.interceptor';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { CustomSerializer } from './store/router/custom-serializer';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,9 @@ import { StoreRouterConnectingModule } from '@ngrx/router-store';
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize Firebase with the config
     AngularFireAuthModule, // If you're using Firebase Authentication
     AngularFirestoreModule,
-    StoreRouterConnectingModule.forRoot()
+    StoreRouterConnectingModule.forRoot({
+      serializer: CustomSerializer
+    })
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
